@@ -5,7 +5,8 @@ import {
   Grid,
   Header,
   Message,
-  Segment
+  Segment,
+  Dropdown
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
@@ -21,6 +22,14 @@ class RegistrationForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        let is_student = false;
+        if (values.userType === 'student') is_student = true;
+        this.props.onAuth(values.userName, values.password,is_student);
+        this.props.history.push("/");
+      }
+    });
     const { username, email, password1, password2 } = this.state;
     this.props.signup(username, email, password1, password2);
   };
@@ -88,7 +97,16 @@ class RegistrationForm extends React.Component {
                   placeholder="Confirm password"
                   type="password"
                 />
+                <Form.Field >
+                  <Dropdown text="Please select a user type !">
+                    <Dropdown.Menu>
+                      <Dropdown.Item text='Student' description='student' />
+                      <Dropdown.Item text='Teacher' description='teacher' />
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </Form.Field>
 
+                <Form.Field>
                 <Button
                   color="teal"
                   fluid
@@ -98,6 +116,7 @@ class RegistrationForm extends React.Component {
                 >
                   Signup
                 </Button>
+                </Form.Field>
               </Segment>
             </Form>
             <Message>
@@ -120,8 +139,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    signup: (username, email, password1, password2) =>
-      dispatch(authSignup(username, email, password1, password2))
+    signup: (username, email, password1, password2, is_student) =>
+      dispatch(authSignup(username, email, password1, password2, is_student))
   };
 };
 
