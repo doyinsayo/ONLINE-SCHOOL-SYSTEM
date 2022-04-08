@@ -27,7 +27,7 @@ class RegistrationForm extends React.Component {
         let is_student = false;
         if (values.userType === 'student') is_student = true;
         this.props.onAuth(values.userName, values.password,is_student);
-        this.props.history.push("/");
+        //this.props.history.push("/");
       }
     });
     const { username, email, password1, password2 } = this.state;
