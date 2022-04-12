@@ -6,22 +6,50 @@ import {
   Header,
   Message,
   Segment,
-  Dropdown
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
 import { authSignup } from "../store/actions/auth";
-
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+ 
 class RegistrationForm extends React.Component {
-  state = {
+  constructor (props) {
+    super(props);
+    this.state = {
+      username: "",
+      email: "",
+      password1: "",
+      password2: "",
+      userType: "",
+  };
+
+  this.handleSubmit = this.handleSubmit.bind(this);
+  this.handleChange = this.handleChange.bind(this);
+};
+   
+
+  /*state = {
     username: "",
     email: "",
     password1: "",
-    password2: ""
-  };
-
+    password2: "",
+    userType: "",
+  };*/
+  
   handleSubmit = e => {
     e.preventDefault();
+
+    const { username, email, password1, password2, userType } = this.state;
+    this.props.signup(username, email, password1, password2, userType );
+    
+    const signupFormValid = 
+    !username?.length || 
+    !email?.length ||
+    !password1?.length ||
+    !password2?.length ||
+    !userType?.length ;
+    /*
     this.props.form.validateFields((err, values) => {
       if (!err) {
         let is_student = false;
@@ -29,9 +57,7 @@ class RegistrationForm extends React.Component {
         this.props.onAuth(values.userName, values.password,is_student);
         //this.props.history.push("/");
       }
-    });
-    const { username, email, password1, password2 } = this.state;
-    this.props.signup(username, email, password1, password2);
+    });*/
   };
 
   handleChange = e => {
@@ -39,7 +65,7 @@ class RegistrationForm extends React.Component {
   };
 
   render() {
-    const { username, email, password1, password2 } = this.state;
+    const { username, email, password1, password2, userType } = this.state;
     const { error, loading, token } = this.props;
     if (token) {
       return <Redirect to="/" />;
@@ -57,7 +83,7 @@ class RegistrationForm extends React.Component {
           {error && <p>{this.props.error.message}</p>}
 
           <React.Fragment>
-            <Form size="large" onSubmit={this.handleSubmit}>
+          <Form size="large"  onSubmit={this.handleSubmit}>
               <Segment stacked>
                 <Form.Input
                   onChange={this.handleChange}
@@ -97,15 +123,13 @@ class RegistrationForm extends React.Component {
                   placeholder="Confirm password"
                   type="password"
                 />
-                <Form.Field >
-                  <Dropdown text="Please select a user type !">
-                    <Dropdown.Menu>
-                      <Dropdown.Item text='Student' description='student' />
-                      <Dropdown.Item text='Teacher' description='teacher' />
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </Form.Field>
-
+                <Form.Input name="userType" value={userType} required={true} onChange={this.handleChange} >
+                <select>
+                  <option value="">Please select a user type !</option>
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                </select>
+                </Form.Input>
                 <Form.Field>
                 <Button
                   color="teal"
