@@ -10,8 +10,6 @@ import {
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
 import { authSignup } from "../store/actions/auth";
-import { Formik } from 'formik';
-import * as Yup from 'yup';
  
 class RegistrationForm extends React.Component {
   constructor (props) {
@@ -22,6 +20,7 @@ class RegistrationForm extends React.Component {
       password1: "",
       password2: "",
       userType: "",
+      is_student : true
   };
 
   this.handleSubmit = this.handleSubmit.bind(this);
@@ -40,8 +39,8 @@ class RegistrationForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    const { username, email, password1, password2, userType } = this.state;
-    this.props.signup(username, email, password1, password2, userType );
+    const { username, email, password1, password2, userType, is_student } = this.state;
+    this.props.signup(username, email, password1, password2, userType, is_student);
     
     const signupFormValid = 
     !username?.length || 
@@ -49,15 +48,7 @@ class RegistrationForm extends React.Component {
     !password1?.length ||
     !password2?.length ||
     !userType?.length ;
-    /*
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        let is_student = false;
-        if (values.userType === 'student') is_student = true;
-        this.props.onAuth(values.userName, values.password,is_student);
-        //this.props.history.push("/");
-      }
-    });*/
+
   };
 
   handleChange = e => {
@@ -83,7 +74,7 @@ class RegistrationForm extends React.Component {
           {error && <p>{this.props.error.message}</p>}
 
           <React.Fragment>
-          <Form size="large"  onSubmit={this.handleSubmit}>
+          <Form size="large"  method='post' onSubmit={this.handleSubmit}>
               <Segment stacked>
                 <Form.Input
                   onChange={this.handleChange}

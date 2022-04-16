@@ -77,6 +77,18 @@ REST_FRAMEWORK = {
     ),
 }
 
+#Following is added to enable registration with email instead of username
+AUTHENTICATION_BACKENDS = (
+# Needed to login by username in Django admin, regardless of `allauth`
+"django.contrib.auth.backends.ModelBackend",
+
+# `allauth` specific authentication methods, such as login by e-mail
+"allauth.account.auth_backends.AuthenticationBackend",
+)
+
+#This is required otherwise it asks for email server
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
